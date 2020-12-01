@@ -6,7 +6,10 @@ fs.readFile('./data.txt', 'utf8', (err, data)=>{
         return
     }
     const arrData = data.split('\r\n').map(num => Number(num));
-    rec(arrData); 
+    //solution 2
+    main2(arrData);
+    //solution 1
+    //main(arrData) 
 })
 
 const findDif = (num, target=2020) => {
@@ -14,7 +17,7 @@ const findDif = (num, target=2020) => {
     return dif;
 }
 
-const main = (data, target) => {
+const main = (data, target=2020) => {
     let dif = [];
     data.forEach(val => {
         if(dif.includes(val)) {
@@ -24,8 +27,10 @@ const main = (data, target) => {
     })
 }
 
-const rec = (data) =>{
+const main2 = (data) =>{
     data.forEach(val => {
         main(data, 2020-val)
     })
 }
+
+
