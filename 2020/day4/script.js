@@ -17,8 +17,8 @@ let validation =  {
             iyr : { params : {regex: new RegExp('^\\d{4}$'), min: 2010, max: 2020}},
             eyr : { params : {regex: new RegExp('^\\d{4}$'), min: 2020, max: 2030}},
             hgt : { params : {regex: new RegExp('^[0-9]+(cm|in)$'), mincm: 150, maxcm: 193, minin: 59, maxin: 76}},
-            hcl : { params : {regex: new RegExp('^#[0-9A-Fa-f]{6}$', 'g')}},
             ecl : { params : {regex: new RegExp('^(amb|blu|brn|gry|grn|hzl|oth){1}$', 'g')}},
+            hcl : { params : {regex: new RegExp('^#[0-9A-Fa-f]{6}$', 'g')}},
             pid : { params : {regex: new RegExp('^\\d{9}$')}},
             cid : { params : {regex: new RegExp('')}}
 }
@@ -50,7 +50,7 @@ const main2 = (data) => {
             let answer = []
             let [key] = Object.keys(elm);
             let value = elm[key];
-            answer.push(checkCases(key)(value, eval(`validation.${key}.params`)));
+            answer.push(checkCases(key)(value, validation[key].params));
             return !(answer.includes(false));
         })
         return (ans);    
