@@ -1,13 +1,16 @@
 import fs from 'fs';
 
-const searchStrings = ['byr', 
-                        ['iyr'],
-                        ['eyr'],
-                        ['hgt'],
-                        ['hcl'],
-                        ['ecl'],
-                        ['pid']]
+fs.readFile('./data.txt', 'utf8', (err, data) => {
+    console.log('question 1: ', main(data.split('\r\n\r\n')));
+})
 
+const searchStrings = ['byr',
+                        'iyr',
+                        'eyr',
+                        'hgt',
+                        'hcl',
+                        'ecl',
+                        'pid']
 
 let validation =  {
             byr : { params : {regex: new RegExp('^\\d{4}$'), min: 1920, max: 2002}},
@@ -19,16 +22,6 @@ let validation =  {
             pid : { params : {regex: new RegExp('^\\d{9}$')}},
             cid : { params : {regex: new RegExp('')}}
 }
-
-fs.readFile('./data.txt', 'utf8', (err, data) => {
-    if(err){
-        console.error(err)
-        return
-    }
-    const arrData = data.split('\r\n\r\n');
-    //question 1 and entry point of question 2
-    console.log('question 1: ', main(arrData));
-})
 
 const main = (data) => {
     let answers = [];
@@ -94,7 +87,7 @@ const height = (h, params) => {
         if(unit === "cm" && height>=mincm && height <= maxcm ){
             return true;
         }
-    
+
         if(unit === "in" && height>=minin && height <= maxin){
             return true;
         }
