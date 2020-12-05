@@ -1,5 +1,4 @@
 import fs from 'fs';
-import { get } from 'http';
 
 fs.readFile('./data.txt', 'utf8', (err, data) => {
     console.log('question 1: ', main(data.split('\r\n')));
