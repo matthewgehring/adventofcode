@@ -114,7 +114,7 @@ const checkCases = (item) => {
         case 'hgt':
             return (hgt, params) => height(hgt, params)
         case 'cid':
-            return (...any) => true
+            return () => true
         default:
             return (val, params) => general(val, params)
     }

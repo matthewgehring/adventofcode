@@ -1,12 +1,5 @@
 import fs from 'fs';
 
-let schema = {
-    lower: '',
-    upper: '',
-    match: "",
-    string: ""
-}
-
 fs.readFile('./data.txt', 'utf8', (err, data)=>{
     if(err){
         console.error(err)
@@ -20,6 +13,14 @@ fs.readFile('./data.txt', 'utf8', (err, data)=>{
 
 })
 
+let schema = {
+    lower: '',
+    upper: '',
+    match: "",
+    string: ""
+}
+
+//question 1
 const main1 = (data) => {
     let counter = 0;
     data.forEach(item => {
@@ -30,6 +31,14 @@ const main1 = (data) => {
     return counter;
 }
 
+const goodMatch1 = (obj) => {
+    let regex = new RegExp(`[^${obj.match}]`, 'g')
+    let matchNumber = obj.string.replace(regex, '').length;
+    if(matchNumber >= obj.lower && matchNumber <= obj.upper ) return true;
+    return false;
+}
+
+//question 2
 const main2 = (data) => {
     let counter = 0;
     data.forEach(item => {
@@ -38,6 +47,12 @@ const main2 = (data) => {
         }
     })
     return counter;
+}
+
+const goodMatch2 = (obj) => {
+    let a = (obj.string[obj.lower - 1] === obj.match) ? true : false;
+    let b = (obj.string[obj.upper - 1] === obj.match) ? true : false;
+    return xor(a,b);
 }
 
 const construct = (str) => {
@@ -49,19 +64,6 @@ const construct = (str) => {
     schema.match = match[1];
     schema.string = string[1];
     return schema;
-}
-
-const goodMatch1 = (obj) => {
-    let regex = new RegExp(`[^${obj.match}]`, 'g')
-    let matchNumber = obj.string.replace(regex, '').length;
-    if(matchNumber >= obj.lower && matchNumber <= obj.upper ) return true;
-    return false;
-}
-
-const goodMatch2 = (obj) => {
-    let a = (obj.string[obj.lower - 1] === obj.match) ? true : false;
-    let b = (obj.string[obj.upper - 1] === obj.match) ? true : false;
-    return xor(a,b);
 }
 
 const xor = (a , b) => {
