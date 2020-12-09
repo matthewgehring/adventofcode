@@ -13,7 +13,7 @@ const main = (data) => {
 const main2 = (data) => {
     const nums = data.map(elm => Number(elm));
     let checkVal = main(nums);
-    let ans = CheckForSegSum(nums, checkVal);
+    let ans = checkForSegSum(nums, checkVal);
     return Math.min(...ans) + Math.max(...ans);
 }
 
@@ -27,7 +27,7 @@ const checkForTwoSum = (data, plen=26) => {
     return false;
 }
 
-const CheckForSegSum = (data, checkVal) => {
+const checkForSegSum = (data, checkVal) => {
     for(let plength=3; plength<data.length-plength; plength++){
         for(let index=0; index < data.length-plength; index++) {
             let [pre, ] = getSegment(data, index, plength+index);
