@@ -30,11 +30,10 @@ const checkForTwoSum = (data, plen=26) => {
 const CheckForSegSum = (data, checkVal) => {
     for(let plength=3; plength<data.length-plength; plength++){
         for(let index=0; index < data.length-plength; index++) {
-            let [pre, val] = getSegment(data, index, plength+index);
+            let [pre, ] = getSegment(data, index, plength+index);
             let sum = pre.reduce((acc, cur) => acc+cur);
             if(sum === checkVal){
                 return pre;
-    
            }
         };
     }
