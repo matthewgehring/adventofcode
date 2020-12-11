@@ -1,17 +1,15 @@
-import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants';
 import fs from 'fs';
-import { get } from 'http';
+import _ from 'lodash';
 
 fs.readFile('./data.txt', 'utf8', (err, data) => {
     console.log('question 1: ', main(data.split('\r\n')));
+    console.log('question 2: ', main2(data.split('\r\n')));
 })
 
 const main = (data) => {
     let board = createBoard(data);
-
-    let temp = Array(board.length).fill().map(() => Array(board[0].length).fill(0)); 
     let x =0
-    while(x<10000){
+    while(x<1000){
         board = update(board);
         x++
     }
@@ -19,17 +17,34 @@ const main = (data) => {
     
 }
 
+const main2 = (data) => {
+    let board = data.map(line => line.split(''));
+    let x =0;
+    while(x<10){
+        prettyPrint(board);
+        board = update2(board);
+        console.log(x);
+        x++
+    }
+    return board.flat().filter(elm =>elm === "#").length;
+    
+}
+
+const prettyPrint = (board) => {
+    board.forEach(line => console.log(`${line.join('')}`));
+}
+
 const update = (board) => {
-    let temp = Array(board.length).fill().map(() => Array(board[0].length).fill(0)); 
+    let temp = _.cloneDeep(board); 
     for(let y= 1; y<board.length-1; y++){
         for(let x=1; x<board[y].length-1;x++){
-            let neighbors = getNeighbors(board, x, y);
-            if(board[y][x] === 0 && neighbors === 0){
-                temp[y][x] = 1;
-            } else if (board[y][x] === 1 && neighbors >= 4){
-                temp[y][x] = 0;
-            } else {
-                temp[y][x] = board[y][x];
+            if(board[y][x] !== 'X'){
+                let neighbors = getNeighbors(board, x, y);
+                if(board[y][x] === 0 && neighbors === 0){
+                    temp[y][x] = 1;
+                } else if (board[y][x] === 1 && neighbors >= 4){
+                    temp[y][x] = 0;
+                }
             }
         }
     }
@@ -58,6 +73,70 @@ const getNeighbors = (board, x,y) => {
     }
     return neighborCount;
 
+}
+
+const getNeighbors2 = (board, x,y) => {
+    let neighborCount = 0;
+    let deltas = [[-1, -1],
+        [0, -1],
+        [1, -1],
+        [-1, 0],
+        [1, 0],
+        [-1, 1],
+        [0, 1],
+        [1, 1]]
+
+    for(const delta of deltas){
+        let length = 1;
+        let [dx, dy] = delta;
+        let inBound = true;
+        let found = false;
+        while((!(found) && inBound)){
+            dx = dx*length;
+            dy = dy*length;
+            //console.log(y+dy, x+dx)
+            if(inBounds(x+dx, y+dy, board)){
+                if(board[y+dy][x+dx] === '#'){
+                    //console.log(y+dy, x+dx)
+                    neighborCount += 1;
+                    found = true;
+                } else if(board[y+dy][x+dx] === 'L'){
+                    found = true;
+                } else {
+                    length+=1;
+                }
+            }else{
+                inBound=false;
+            }
+
+        }
+    }
+    return neighborCount;
+
+}
+
+const update2 = (board) => {
+    let temp = _.cloneDeep(board);  
+    for(let y= 0; y<=board.length-1; y++){
+        for(let x=0; x<=board[y].length-1;x++){
+            if(!(board[y][x] === '.')){
+                let neighbors = getNeighbors2(board, x, y);
+                if(board[y][x] === 'L' && neighbors === 0){
+                    temp[y][x] = '#';
+                } else if (board[y][x] === '#' && neighbors >= 5){
+                    temp[y][x] = 'L';
+                }
+            }
+        }
+    }
+    return temp;
+}
+
+const inBounds = (x, y, board) => {
+    if(x<0 || x >board[0].length-1 || y < 0 || y>board.length-1){
+        return false;
+    }
+    return true;
 }
 
 const createBoard = (data) => {
