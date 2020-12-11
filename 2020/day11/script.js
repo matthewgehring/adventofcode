@@ -20,10 +20,9 @@ const main = (data) => {
 const main2 = (data) => {
     let board = data.map(line => line.split(''));
     let x =0;
-    while(x<10){
-        prettyPrint(board);
+    while(x<2000){
+        //prettyPrint(board);
         board = update2(board);
-        console.log(x);
         x++
     }
     return board.flat().filter(elm =>elm === "#").length;
@@ -86,21 +85,20 @@ const getNeighbors2 = (board, x,y) => {
         [0, 1],
         [1, 1]]
 
-    for(const delta of deltas){
+    deltas.forEach(delta => {
         let length = 1;
-        let [dx, dy] = delta;
+        let [dy, dx] = delta;
         let inBound = true;
         let found = false;
+        let i, j = 0;
         while((!(found) && inBound)){
-            dx = dx*length;
-            dy = dy*length;
-            //console.log(y+dy, x+dx)
-            if(inBounds(x+dx, y+dy, board)){
-                if(board[y+dy][x+dx] === '#'){
-                    //console.log(y+dy, x+dx)
+            i = x + dx*length;
+            j = y + dy*length;
+            if(inBounds(i, j, board)){
+                if(board[j][i] === '#'){
                     neighborCount += 1;
                     found = true;
-                } else if(board[y+dy][x+dx] === 'L'){
+                } else if(board[j][i] === 'L'){
                     found = true;
                 } else {
                     length+=1;
@@ -110,7 +108,7 @@ const getNeighbors2 = (board, x,y) => {
             }
 
         }
-    }
+    })
     return neighborCount;
 
 }
@@ -139,6 +137,7 @@ const inBounds = (x, y, board) => {
     return true;
 }
 
+//this wasnt necessary but im leaving it because lazy
 const createBoard = (data) => {
     let board = data.map(line => line.split(''));
     let zeros = new Array(board[0].length).fill(0);
