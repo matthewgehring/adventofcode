@@ -1,4 +1,3 @@
-import { notDeepEqual } from 'assert';
 import fs from 'fs';
 import modInverse from './modInverse.js';
 
