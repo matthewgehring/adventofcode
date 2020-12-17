@@ -1,6 +1,3 @@
-// filter out bad tickets
-//apply rules to each position, create new set for each position on each ticket
-//take intersection of each position set for every ticket, this should yield only 1 rule per position 
 import fs from 'fs';
 
 fs.readFile('./data.txt', 'utf8', (err, data) => {
@@ -80,16 +77,13 @@ const backtrack = (validFields) => {
     let elm;
     if(allIndexLengthOne(validFields)[0]){
         return true;
-        //return true;
     } else{
         elm = allIndexLengthOne(validFields)[1];
     }
     let temp = validFields[elm];
-    //console.log(elm);
     for(let idx=0; idx < validFields[elm].length; idx++){
         if(checkIfValid(elm, idx, validFields)){
             validFields[elm] = [validFields[elm][idx]]
-            //console.log(validFields)
             if(backtrack(validFields)) {
                 return validFields;
             }
