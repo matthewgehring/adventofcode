@@ -31,7 +31,7 @@ const shuntingYardAlgo = (l) => {
         if(line[idx].match(nums)){
             output.push(line[idx]);
         } else if(line[idx].match(ops)){
-            while(!(operators.size()===0) && precedence[operators.peek()] > precedence[line[idx]] && !(operators.peek() === '(')){
+            while(!(operators.size()===0) && precedence[operators.peek()] >= precedence[line[idx]] && !(operators.peek() === '(')){
                 output.push(operators.pop());
             }
             operators.push(line[idx]);
