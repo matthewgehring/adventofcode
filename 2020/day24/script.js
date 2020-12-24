@@ -1,6 +1,7 @@
 import fs from 'fs';
 
 let floor = new Map();
+let temp = new Map(floor);
 
 fs.readFile('./data.txt', 'utf8', (err, data) => {
     console.log('question: ', main(data.split('\r\n')));
@@ -9,39 +10,53 @@ fs.readFile('./data.txt', 'utf8', (err, data) => {
 const main = data => {
     let p1 = 0;
     let p2 = 0;
+
     for(const tile of data){
-        flipTile(getTile(tile))
+        addNeighbors(flipTile(getTile(tile)))
     }
+
     floor.forEach((value)=> value === 'black' ? p1++ : 0)
     console.log('part 1', p1);
+    
     let day = 1;
     
-    let temp = new Map(floor);
+    temp = new Map(floor);
+    
+    floor.forEach((value, key)=> {
+        let tile = key.split(',').map(i=>i*1);
+        addNeighbors(tile, temp);
+    });
 
-    while(day<=4){
-        p2 = 0;
+    floor = new Map(temp)
+
+    while(day<=100){
         temp = new Map(floor);
-        temp.forEach((value, key, temp)=>{
+
+        floor.forEach((value, key)=>{
+            
             let tile = key.split(',').map(i=>i*1);
-            let neighbors = getNeighbors(tile);
+            let neighbors = getNeighbors(tile, floor);
+
             if(value === 'black' && (neighbors === 0 || neighbors > 2)){
-                floor.set(key, 'white');
-                addNeighbors(tile);
+                temp.set(key, 'white');
+
             } else if (value === 'white' && neighbors === 2){
-                floor.set(key, 'black');
-                addNeighbors(tile);
+                temp.set(key, 'black');
+                addNeighbors(tile, temp);
             }
         })
-        floor.forEach((value)=> value === 'black' ? p2++ : 0)
-        console.log(day, p2);
+
+        floor = new Map(temp)
         day++
     }
+
+    floor.forEach((value)=> value === 'black' ? p2++ : 0)
     console.log('part2 ', p2)
     return 
 
 }
 
-const addNeighbors = tile => {
+const addNeighbors = (tile, f = floor) => {
     let [x,z,y] = tile;
     let deltas = [
         [1, 0, -1],
@@ -54,13 +69,13 @@ const addNeighbors = tile => {
 
     for(const delta of deltas){
         let [dx,dz,dy] = delta;
-        if(!floor.get(`${x+dx},${z+dz},${y+dy}`)){
-            floor.set(`${x+dx},${z+dz},${y+dy}`, 'white')
+        if(!f.get(`${x+dx},${z+dz},${y+dy}`)){
+            f.set(`${x+dx},${z+dz},${y+dy}`, 'white')
         }
     }
 }
 
-const getNeighbors = tile => {
+const getNeighbors = (tile, f) => {
     let [x, z, y] = tile;
     let neighbors = 0;
     let deltas = [
@@ -71,14 +86,14 @@ const getNeighbors = tile => {
         [0,-1,1],
         [1,-1,0]
     ]
+
     for(const delta of deltas){
         let [dx,dz,dy] = delta;
-        if(floor.get(`${x+dx},${z+dz},${y+dy}`)){
-            floor.get(`${x+dx},${z+dz},${y+dy}`) === 'black' ? neighbors++ : 0;
-        } else {
-            floor.set(`${x+dx},${z+dz},${y+dy}`, 'white')
+        if(f.get(`${x+dx},${z+dz},${y+dy}`)){
+            f.get(`${x+dx},${z+dz},${y+dy}`) === 'black' ? neighbors++ : 0;
         }
     }
+
     return neighbors;
 }
 
@@ -94,26 +109,21 @@ const getTile = (tile) => {
         nw:[0,-1,1],
         ne:[1,-1,0]
     }
-    let t = [0,0,0]
+
+    let t = [0,0,0];
+
     for(const cord of tileCords){
         let [dx,dz,dy] = directions[cord];
         t[0] += dx;
         t[1] += dz;
         t[2] += dy; 
     }
+    
     return t;
 }
 
 const flipTile = tileCords => {
     let [x,z,y] = tileCords;
-    let deltas = [
-        [1, 0, -1],
-        [1,-1,0],
-        [0,-1,1],
-        [-1,0,1],
-        [-1,1,0],
-        [0,1,-1]
-    ]
 
     if(!floor.get(`${x},${z},${y}`)){
         floor.set(`${x},${z},${y}`, 'black')
@@ -121,11 +131,7 @@ const flipTile = tileCords => {
         let set = floor.get(`${x},${z},${y}`) === 'white' ? 'black' : 'white';
         floor.set(`${x},${z},${y}`, set); 
     }
-    for(const delta of deltas){
-        let [dx,dz,dy] = delta;
-        if(!floor.get(`${x+dx},${z+dz},${y+dy}`)){
-            floor.set(`${x+dx},${z+dz},${y+dy}`, 'white')
-        }
-    }
+
+    return tileCords;
     
 }
