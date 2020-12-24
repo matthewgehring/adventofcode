@@ -26,8 +26,10 @@ const main = data => {
             let neighbors = getNeighbors(tile);
             if(value === 'black' && (neighbors === 0 || neighbors > 2)){
                 floor.set(key, 'white');
+                addNeighbors(tile);
             } else if (value === 'white' && neighbors === 2){
                 floor.set(key, 'black');
+                addNeighbors(tile);
             }
         })
         floor.forEach((value)=> value === 'black' ? p2++ : 0)
@@ -37,6 +39,25 @@ const main = data => {
     console.log('part2 ', p2)
     return 
 
+}
+
+const addNeighbors = tile => {
+    let [x,z,y] = tile;
+    let deltas = [
+        [1, 0, -1],
+        [1,-1,0],
+        [0,-1,1],
+        [-1,0,1],
+        [-1,1,0],
+        [0,1,-1]
+    ]
+
+    for(const delta of deltas){
+        let [dx,dz,dy] = delta;
+        if(!floor.get(`${x+dx},${z+dz},${y+dy}`)){
+            floor.set(`${x+dx},${z+dz},${y+dy}`, 'white')
+        }
+    }
 }
 
 const getNeighbors = tile => {
