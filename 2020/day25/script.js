@@ -6,10 +6,6 @@ const getLoop = (key) => {
         value *= subject;
         value = value % 20201227n
         loop++;
-        // for(let x = loopstart; x<loop; x++){
-        //     value *= subject;
-        //     value = value % 20201227n
-        // }
     }
     
     return loop-1;
